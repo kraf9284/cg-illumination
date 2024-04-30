@@ -18,8 +18,9 @@ uniform vec3 ambient; // Ia
 out vec4 FragColor;
 
 void main() {
+    // Color of the material
     vec3 model_color = mat_color * texture(mat_texture, model_uv).rgb;
     
-    // Color
+    // Final Color
     FragColor = vec4(model_color, 1.0);
 }
