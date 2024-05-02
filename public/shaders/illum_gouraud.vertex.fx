@@ -28,12 +28,31 @@ out vec3 specular_illum;
 
 void main() {
     // Pass diffuse and specular illumination onto the fragment shader
-    // Do light math here, those shoudln't be zeroes
     diffuse_illum = vec3(0.0, 0.0, 0.0);
     specular_illum = vec3(0.0, 0.0, 0.0);
 
+    for (int i = 0; i < num_lights; i++) {
+        vec3 light_dir = normalize(light_positions[i] - position);
+        vec3 N = normalize(normal);
+        vec3 L = normalize(light_dir;)
+        float Kd = 1;
+
+        // Final diffuse
+        vec3 diffuse = light_colors[i] * Kd * dot(N, L);
+
+        vec3 view_dir = normalize(camera_position - position);
+        vec3 R = 2 * dot(N, L) * N - L;
+        float Ks = 1;
+
+        // Final specular
+        specular = light_colors[i] * Ks * dot(R, view_dir) ^ mat_shininess;
+
+        diffuse_illum += diffuse;
+        specular_illum += specular;
+    }
+
     // Pass vertex texcoord onto the fragment shader
-    model_uv = uv;
+    model_uv = uv * texture_scale;
 
     // Transform and project vertex from 3D world-space to 2D screen-space
     gl_Position = projection * view * world * vec4(position, 1.0);
