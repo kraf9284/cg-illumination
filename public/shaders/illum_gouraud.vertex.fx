@@ -31,10 +31,10 @@ void main() {
     diffuse_illum = vec3(0.0, 0.0, 0.0);
     specular_illum = vec3(0.0, 0.0, 0.0);
 
+    vec3 pos = vec3(world * vec4(position, 1.0));
+    vec3 norm = inverse(transpose(mat3(world))) * normal;
+    
     for (int i = 0; i < num_lights; i++) {
-        vec3 pos = position;
-        vec3 norm = normal;
-        
         vec3 light_dir = normalize(light_positions[i] - pos);
         vec3 N = normalize(norm);
         vec3 L = normalize(light_dir);
