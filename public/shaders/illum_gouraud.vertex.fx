@@ -76,19 +76,19 @@ void main() {
 
         // Final diffuse
 
-        vec3 diffuse = light_colors[i] * dot(N, L);
+        vec3 diffuse = light_colors[i] * max(dot(N, L), 0.0);
 
  
 
         vec3 view_dir = normalize(camera_position - pos);
 
-        vec3 R = 2.0 * dot(N, L) * N - L;
+        vec3 R = normalize(2.0 * dot(N, L) * N - L);
 
  
 
         // Final specular
 
-        vec3 specular = light_colors[i] * pow(dot(R, view_dir), mat_shininess);
+        vec3 specular = light_colors[i] * pow(max(dot(R, view_dir), 0.0), mat_shininess);
 
  
 

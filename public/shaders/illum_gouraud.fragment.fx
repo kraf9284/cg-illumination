@@ -46,7 +46,7 @@ void main() {
 
     // Final Color
 
-    FragColor = vec4(model_color * diffuse_illum * mat_color + specular_illum * mat_specular + ambient, 1.0);
+    FragColor = vec4(model_color * diffuse_illum + specular_illum * mat_specular + ambient, 1.0);
 
 }
 
