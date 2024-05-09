@@ -33,7 +33,7 @@ class Renderer {
             },
             {
                 scene: new Scene(this.engine),
-                background_color: new Color4(0.1, 0.1, 0.1, 1.0),
+                background_color: new Color4(1.0, 1.0, 1.0, 1.0),
                 materials: null,
                 ground_subdivisions: [50, 50],
                 ground_mesh: null,
