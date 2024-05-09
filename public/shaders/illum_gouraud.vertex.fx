@@ -84,7 +84,7 @@ void main() {
 
         vec3 R = normalize(2.0 * dot(N, L) * N - L);
 
- 
+
 
         // Final specular
 
