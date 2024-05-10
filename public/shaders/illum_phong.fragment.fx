@@ -55,5 +55,5 @@ void main() {
 
 
     // Color
-    FragColor = vec4(model_color * diffuse_illum + specular_illum * mat_specular + ambient, 1.0);
+    FragColor = vec4(model_color * diffuse_illum + specular_illum * mat_specular + model_color * ambient, 1.0);
 }

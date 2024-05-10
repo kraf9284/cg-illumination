@@ -1,4 +1,4 @@
-#version 300 es
+ #version 300 es
 precision mediump float;
 
 // Input
@@ -22,5 +22,5 @@ void main() {
     vec3 model_color = mat_color * texture(mat_texture, model_uv).rgb;
     
     // Final Color
-    FragColor = vec4(model_color, 1.0);
+    FragColor = vec4(model_color * diffuse_illum + specular_illum * mat_specular + model_color * ambient, 1.0);
 }
