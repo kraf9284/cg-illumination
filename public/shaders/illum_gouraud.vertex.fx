@@ -56,6 +56,7 @@ out vec3 specular_illum;
 
 void main() {
 
+
     // Pass diffuse and specular illumination onto the fragment shader
 
     diffuse_illum = vec3(0.0, 0.0, 0.0);
