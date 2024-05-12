@@ -42,11 +42,11 @@ void main() {
 
     vec3 neighbor1 = vec3(world_pos.x + 0.1, world_pos.y, world_pos.z);
     vec2 neighbor1UV = uv;
-    neighbor1UV.x += 0.1;
+    neighbor1UV.x += 0.1 / ground_size.x;
 
     vec3 neighbor2 = vec3(world_pos.x, world_pos.y, world_pos.z + 0.1);
     vec2 neighbor2UV = uv;
-    neighbor2UV.y += 0.1;
+    neighbor2UV.y += 0.1 / ground_size.y;
 
     world_pos.y += 2.0 * height_scalar * (texture(heightmap, uv).r - 0.5);
 

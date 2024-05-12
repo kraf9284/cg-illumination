@@ -24,15 +24,30 @@ out vec2 model_uv;
 
 void main() {
     // Get initial position of vertex (prior to height displacement)
-    vec4 world_pos = world * vec4(position, 1.0);
+    vec3 world_pos = (world * vec4(position, 1.0)).xyz;
 
-    // Pass vertex position onto the fragment shader
-    model_position = world_pos.xyz;
-    // Pass vertex normal onto the fragment shader
-    model_normal = vec3(0.0, 1.0, 0.0);
+    vec3 neighbor1 = vec3(world_pos.x + 0.1, world_pos.y, world_pos.z);
+    vec2 neighbor1UV = uv;
+    neighbor1UV.x += 0.1 / ground_size.x;
+
+    vec3 neighbor2 = vec3(world_pos.x, world_pos.y, world_pos.z + 0.1);
+    vec2 neighbor2UV = uv;
+    neighbor2UV.y += 0.1 / ground_size.y;
+
+    world_pos.y += 2.0 * height_scalar * (texture(heightmap, uv).r - 0.5);
+
+    neighbor1.y += 2.0 * height_scalar * (texture(heightmap, neighbor1UV).r - 0.5);
+
+    neighbor2.y += 2.0 * height_scalar * (texture(heightmap, neighbor2UV).r - 0.5);
+
+    vec3 tangent = neighbor1 - world_pos;
+    vec3 bitangent = neighbor2 - world_pos;
+    vec3 normal = cross(tangent, bitangent);
+
+    model_normal = normalize(normal);
     // Pass vertex texcoord onto the fragment shader
-    model_uv = uv;
+    model_uv = uv*texture_scale;
 
     // Transform and project vertex from 3D world-space to 2D screen-space
-    gl_Position = projection * view * world_pos;
+    gl_Position = projection * view * vec4(world_pos, 1.0);
 }
