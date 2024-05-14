@@ -12,6 +12,7 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { RawTexture } from '@babylonjs/core/Materials/Textures/rawTexture';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { Vector2, Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { KeyboardEventTypes } from '@babylonjs/core';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 
@@ -49,7 +50,7 @@ class Renderer {
                 ground_subdivisions: [50, 50],
                 ground_mesh: null,
                 camera: null,
-                ambient: new Color3(0.2, 0.2, 0.2),
+                ambient: new Color3(0.3, 0.3, 0.3),
                 lights: [],
                 models: []
             }
@@ -135,7 +136,28 @@ class Renderer {
         }
         box.material = materials['illum_' + this.shading_alg];
         current_scene.models.push(box);
-
+        scene.onKeyboardObservable.add((kbInfo) => {
+            switch (kbInfo.event.key) {
+                case "a":
+                    current_scene.lights[this.active_light].position.x -= 1;
+                    break;
+                case "d":
+                    current_scene.lights[this.active_light].position.x += 1;
+                    break;
+                case "f":
+                    current_scene.lights[this.active_light].position.y -= 1;
+                    break;
+                case "r":
+                    current_scene.lights[this.active_light].position.y += 1;
+                    break;
+                case "w":
+                    current_scene.lights[this.active_light].position.z -= 1;
+                    break;
+                case "s":
+                    current_scene.lights[this.active_light].position.z += 1;
+                    break;
+            }  
+        });
 
         // Animation function - called before each frame gets rendered
         scene.onBeforeRenderObservable.add(() => {
@@ -258,7 +280,28 @@ class Renderer {
         }
         cust.material = materials['illum_' + this.shading_alg];
         current_scene.models.push(cust);
-
+        scene.onKeyboardObservable.add((kbInfo) => {
+            switch (kbInfo.event.key) {
+                case "a":
+                    current_scene.lights[this.active_light].position.x -= 1;
+                    break;
+                case "d":
+                    current_scene.lights[this.active_light].position.x += 1;
+                    break;
+                case "f":
+                    current_scene.lights[this.active_light].position.y -= 1;
+                    break;
+                case "r":
+                    current_scene.lights[this.active_light].position.y += 1;
+                    break;
+                case "w":
+                    current_scene.lights[this.active_light].position.z -= 1;
+                    break;
+                case "s":
+                    current_scene.lights[this.active_light].position.z += 1;
+                    break;
+            }  
+        });
         // Animation function - called before each frame gets rendered
         scene.onBeforeRenderObservable.add(() => {
             // update models and lights here (if needed)
@@ -289,97 +332,90 @@ class Renderer {
         current_scene.camera.minZ = 0.1;
         current_scene.camera.maxZ = 100.0;
 
-        // Create light0
-        let light0 = new PointLight('light0', new Vector3(1.0, 1.0, 5.0), scene);
-        light0.diffuse = new Color3(1.0, 0.0, 0.0);
+        // Create light0 - White Light
+        let light0 = new PointLight('light0', new Vector3(1.0, 5.0, 5.0), scene);
+        light0.diffuse = new Color3(1.0, 1.0, 1.0); // White light
         light0.specular = new Color3(1.0, 1.0, 1.0);
         current_scene.lights.push(light0);
 
-        // Create light1
-        let light1 = new PointLight('light1', new Vector3(0.0, 4.0, 0.0), scene);
-        light1.diffuse = new Color3(0.56, 0.56, 0.91);
-        light1.specular = new Color3(1.0, 1.0, 1.0);
-        current_scene.lights.push(light1);
-
-        // Create light2
-        let light2 = new PointLight('light2', new Vector3(2.0, 3.0, 3.0), scene);
-        light2.diffuse = new Color3(0.1, 1.0, 0.1);
-        light2.specular = new Color3(1.0, 1.0, 1.0);
-        current_scene.lights.push(light2);
+        let turf_texture = new Texture(BASE_URL + 'textures/field.jpg', scene);
 
         // Create ground mesh
         let white_texture = RawTexture.CreateRGBTexture(new Uint8Array([255, 255, 255]), 1, 1, scene);
-        let ground_heightmap = new Texture(BASE_URL + 'heightmaps/iceland.png', scene);
+        let ground_heightmap = new Texture(BASE_URL + 'heightmaps/mulch-heightmap.png', scene);
         ground_mesh.scaling = new Vector3(20.0, 1.0, 20.0);
         ground_mesh.metadata = {
-            mat_color: new Color3(0.5, 0.5, 0.5),
-            mat_texture: white_texture,
-            mat_specular: new Color3(0.3, 0.3, 0.3),
+            mat_color: new Color3(1, 1, 1),
+            mat_texture: turf_texture,
+            mat_specular: Color3.Black(),
             mat_shininess: 1,
             texture_scale: new Vector2(1.0, 1.0),
             height_scalar: 1.0,
             heightmap: ground_heightmap
         }
-        //ground_mesh.material = materials['ground_' + this.shading_alg];
+
+        ground_mesh.material = materials['ground_' + this.shading_alg];
         
-        // Create other models
-        let cyl = CreateCylinder('cylinder', {tessellation: 32}, scene);
-        cyl.position = new Vector3(1.0, 1.0, 3.0);
-        cyl.metadata = {
-            mat_color: new Color3(0.7, 0.7, 0.7),
-            mat_texture: white_texture,
+            // Create stacked spheres
+        let sphere1 = CreateSphere('sphere1', { segments: 32, diameter: 1 }, scene);
+        sphere1.position = new Vector3(0, 0.5, 0); // Position at the center
+        sphere1.metadata = {
+            mat_color: new Color3(1, 1, 1), // Red
+            mat_texture: new Texture(BASE_URL + 'textures/balldimpled.jpg', scene),
+            mat_specular: new Color3(0.2, 0.2, 0.2),
+            mat_shininess: 16,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        sphere1.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(sphere1);
+
+        let sphere2 = CreateSphere('sphere2', { segments: 32, diameter: 1 }, scene);
+        sphere2.position = new Vector3(0, 1.5, 0); // Position above the first sphere
+        sphere2.metadata = {
+            mat_color: new Color3(1, 1, 1), // Green
+            mat_texture: new Texture(BASE_URL + 'textures/baseball.jpg', scene),
+            mat_specular: new Color3(0.1, 0.1, 0.1),
+            mat_shininess: 16,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        sphere2.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(sphere2);
+
+        let sphere3 = CreateSphere('sphere3', { segments: 32, diameter: 1 }, scene);
+        sphere3.position = new Vector3(0, 2.5, 0); // Position above the second sphere
+        sphere3.metadata = {
+            mat_color: new Color3(1, 1, 1), // Blue
+            mat_texture: new Texture(BASE_URL + 'textures/futbol.jpg', scene),
             mat_specular: new Color3(0.8, 0.8, 0.8),
             mat_shininess: 16,
             texture_scale: new Vector2(1.0, 1.0)
         }
-        cyl.material = materials['illum_' + this.shading_alg];
-        //current_scene.models.push(cyl);
+        sphere3.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(sphere3);
 
-        // let ico = CreateIcoSphere('icosphere', {subdivisions: 1, radius: 0.6}, scene);
-        // ico.position = new Vector3(1.0, 2.5, 3.0);
-        // ico.metadata = {
-        //     mat_color: new Color3(0.7, 0.7, 0.7),
-        //     mat_texture: white_texture,
-        //     mat_specular: new Color3(0.8, 0.8, 0.8),
-        //     mat_shininess: 4,
-        //     texture_scale: new Vector2(1.0, 1.0)
-        // }
-        // ico.material = materials['illum_' + this.shading_alg];
-        //current_scene.models.push(ico);
 
-        // let hemi = CreateHemisphere('hemisphere', {segments: 32, diameter: 4.0}, scene);
-        // hemi.position = new Vector3(-5.0, 0.0, 5.0);
-        // hemi.metadata = {
-        //     mat_color: new Color3(1.0, 0.1, 1.0),
-        //     mat_texture: white_texture,
-        //     mat_specular: new Color3(0.7, 0.7, 0.7),
-        //     mat_shininess: 6,
-        //     texture_scale: new Vector2(1.0, 1.0)
-        // }
-        // hemi.material = materials['illum_' + this.shading_alg];
-        //current_scene.models.push(hemi);
-
-        let cust = new Mesh("custom", scene);
-        let positions = [-5, 2, -3, -7, -2, -3, -3, -2, -3, 5, 2, 3, 7, -2, 3, 3, -2, 3];
-        let indices = [0, 1, 2, 3, 4, 5];
-
-        let vertexData = new VertexData();
-
-        //vertexData.positions = positions;
-        //vertexData.indices = indices;
-        //vertexData.applyToMesh(cust);
-
-        cust.position = new Vector3(5.0, 0.0, 5.0);
-        cust.metadata = {
-            mat_color: new Color3(1.0, 0.0, 0.0),
-            mat_texture: white_texture,
-            mat_specular: new Color3(0.9, 0.9, 0.9),
-            mat_shininess: 4,
-            texture_scale: new Vector2(1.0, 1.0)
-        }
-        cust.material = materials['illum_' + this.shading_alg];
-        //current_scene.models.push(cust);
-
+        scene.onKeyboardObservable.add((kbInfo) => {
+            switch (kbInfo.event.key) {
+                case "a":
+                    current_scene.lights[this.active_light].position.x -= 1;
+                    break;
+                case "d":
+                    current_scene.lights[this.active_light].position.x += 1;
+                    break;
+                case "f":
+                    current_scene.lights[this.active_light].position.y -= 1;
+                    break;
+                case "r":
+                    current_scene.lights[this.active_light].position.y += 1;
+                    break;
+                case "w":
+                    current_scene.lights[this.active_light].position.z -= 1;
+                    break;
+                case "s":
+                    current_scene.lights[this.active_light].position.z += 1;
+                    break;
+            }  
+        });
         // Animation function - called before each frame gets rendered
         scene.onBeforeRenderObservable.add(() => {
             // update models and lights here (if needed)
