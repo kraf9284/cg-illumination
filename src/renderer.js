@@ -321,6 +321,7 @@ class Renderer {
             box.lookAt(p2);
             box.parent = cust;
         }
+        current_scene.models.push(cust);
         
         // Animation function - called before each cust gets rendered
         current_scene.models.push(cust);
@@ -434,8 +435,6 @@ class Renderer {
             mat_shininess: 16,
             texture_scale: new Vector2(1.0, 1.0)
         }
-        cust.material = materials['illum_' + this.shading_alg];
-        //current_scene.models.push(cust);
 
         // Animation function - called before each cust gets rendered
         sphere3.material = materials['illum_' + this.shading_alg];
