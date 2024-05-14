@@ -289,6 +289,8 @@ class Renderer {
         vertexData.positions = vertices.flatMap(vertex => [vertex.x, vertex.y, vertex.z]);
         vertexData.indices = indices;
         vertexData.applyToMesh(cust);
+
+        cust.position = new Vector3(-4.0, 3.0, -4.0);
         
         // Create material
         cust.metadata = {
@@ -302,7 +304,6 @@ class Renderer {
 
         // Make lines frame
         let lines = MeshBuilder.CreateLineSystem("lines", {lines: indices}, scene);
-        lines.position = new Vector3(5.0, 0.0, 5.0);
 
         // Set parent to lines mesh
         lines.parent = cust;
