@@ -160,7 +160,7 @@ class Renderer {
             }  
         });
 
-        // Animation function - called before each cust gets rendered
+        // Animation function - called before each frame gets rendered
         scene.onBeforeRenderObservable.add(() => {
             // update models and lights here (if needed)
             // ...
@@ -324,8 +324,6 @@ class Renderer {
         }
         current_scene.models.push(cust);
         
-        // Animation function - called before each cust gets rendered
-        current_scene.models.push(cust);
         scene.onKeyboardObservable.add((kbInfo) => {
             switch (kbInfo.event.key) {
                 case "a":
@@ -437,7 +435,7 @@ class Renderer {
             texture_scale: new Vector2(1.0, 1.0)
         }
 
-        // Animation function - called before each cust gets rendered
+        // Animation function - called before each frame gets rendered
         sphere3.material = materials['illum_' + this.shading_alg];
         current_scene.models.push(sphere3);
 
