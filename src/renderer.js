@@ -8,6 +8,7 @@ import { CreateIcoSphere } from '@babylonjs/core';
 import { CreateHemisphere } from '@babylonjs/core';
 import { VertexData } from '@babylonjs/core';
 import { Mesh } from '@babylonjs/core';
+import { MeshBuilder } from '@babylonjs/core';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { RawTexture } from '@babylonjs/core/Materials/Textures/rawTexture';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
@@ -103,7 +104,7 @@ class Renderer {
         ground_mesh.metadata = {
             mat_color: new Color3(0.10, 0.65, 0.15),
             mat_texture: white_texture,
-            mat_specular: new Color3(0.0, 0.0, 0.0),
+            mat_specular: new Color3(0.1, 0.1, 0.1),
             mat_shininess: 1,
             texture_scale: new Vector2(1.0, 1.0),
             height_scalar: 1.0,
@@ -137,7 +138,7 @@ class Renderer {
         current_scene.models.push(box);
 
 
-        // Animation function - called before each frame gets rendered
+        // Animation function - called before each cust gets rendered
         scene.onBeforeRenderObservable.add(() => {
             // update models and lights here (if needed)
             // ...
@@ -238,17 +239,36 @@ class Renderer {
         hemi.material = materials['illum_' + this.shading_alg];
         current_scene.models.push(hemi);
 
+        // Create custom parent mesh
         let cust = new Mesh("custom", scene);
-        let positions = [-5, 2, -3, -7, -2, -3, -3, -2, -3, 5, 2, 3, 7, -2, 3, 3, -2, 3];
-        let indices = [0, 1, 2, 3, 4, 5];
 
+        // Define vertices
+        let vertices = [
+            new Vector3(-1, -1, -1),
+            new Vector3(1, -1, -1),
+            new Vector3(1, 1, -1),
+            new Vector3(-1, 1, -1),
+            new Vector3(-1, -1, 1),
+            new Vector3(1, -1, 1),
+            new Vector3(1, 1, 1),
+            new Vector3(-1, 1, 1)
+        ];
+        
+        // Define indices
+        let indices = [
+            0, 1, 1, 2, 2, 3, 3, 0, // Front face
+            4, 5, 5, 6, 6, 7, 7, 4, // Back face
+            0, 4, 1, 5, 2, 6, 3, 7  // Connecting edges
+        ];
+        
+        // Create VertexData
         let vertexData = new VertexData();
-
-        vertexData.positions = positions;
+        
+        vertexData.positions = vertices.flatMap(vertex => [vertex.x, vertex.y, vertex.z]);
         vertexData.indices = indices;
         vertexData.applyToMesh(cust);
-
-        cust.position = new Vector3(5.0, 0.0, 5.0);
+        
+        // Create material
         cust.metadata = {
             mat_color: new Color3(1.0, 0.0, 0.0),
             mat_texture: white_texture,
@@ -257,9 +277,30 @@ class Renderer {
             texture_scale: new Vector2(1.0, 1.0)
         }
         cust.material = materials['illum_' + this.shading_alg];
-        current_scene.models.push(cust);
 
-        // Animation function - called before each frame gets rendered
+        // Make lines frame
+        let lines = MeshBuilder.CreateLineSystem("lines", {lines: indices}, scene);
+        lines.position = new Vector3(5.0, 0.0, 5.0);
+
+        // Set parent to lines mesh
+        lines.parent = cust;
+
+        // Create rectangular prisms connecting the edges
+        for (let i = 0; i < indices.length; i += 2) {
+            let p1 = vertices[indices[i]];
+            let p2 = vertices[indices[i + 1]];
+
+            let length = Vector3.Distance(p1, p2);
+            let direction = p2.subtract(p1);
+            let center = p1.add(direction.scale(0.5));
+
+            let box = MeshBuilder.CreateBox("box", {size: length, width: 0.2, height: 0.2}, scene);
+            box.position = center;
+            box.lookAt(p2);
+            box.parent = cust;
+        }
+        
+        // Animation function - called before each cust gets rendered
         scene.onBeforeRenderObservable.add(() => {
             // update models and lights here (if needed)
             // ...
@@ -380,7 +421,7 @@ class Renderer {
         cust.material = materials['illum_' + this.shading_alg];
         //current_scene.models.push(cust);
 
-        // Animation function - called before each frame gets rendered
+        // Animation function - called before each cust gets rendered
         scene.onBeforeRenderObservable.add(() => {
             // update models and lights here (if needed)
             // ...
