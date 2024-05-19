@@ -160,7 +160,7 @@ class Renderer {
             }  
         });
 
-        // Animation function - called before each cust gets rendered
+        // Animation function - called before each frame gets rendered
         scene.onBeforeRenderObservable.add(() => {
             // update models and lights here (if needed)
             // ...
@@ -289,6 +289,8 @@ class Renderer {
         vertexData.positions = vertices.flatMap(vertex => [vertex.x, vertex.y, vertex.z]);
         vertexData.indices = indices;
         vertexData.applyToMesh(cust);
+
+        cust.position = new Vector3(-4.0, 3.0, -4.0);
         
         // Create material
         cust.metadata = {
@@ -302,7 +304,6 @@ class Renderer {
 
         // Make lines frame
         let lines = MeshBuilder.CreateLineSystem("lines", {lines: indices}, scene);
-        lines.position = new Vector3(5.0, 0.0, 5.0);
 
         // Set parent to lines mesh
         lines.parent = cust;
@@ -321,9 +322,8 @@ class Renderer {
             box.lookAt(p2);
             box.parent = cust;
         }
-        
-        // Animation function - called before each cust gets rendered
         current_scene.models.push(cust);
+        
         scene.onKeyboardObservable.add((kbInfo) => {
             switch (kbInfo.event.key) {
                 case "a":
@@ -555,7 +555,7 @@ class Renderer {
         //cust.material = materials['illum_' + this.shading_alg];
         //current_scene.models.push(cust);
 
-        // Animation function - called before each cust gets rendered
+        // Animation function - called before each frame gets rendered
         sphere3.material = materials['illum_' + this.shading_alg];
         current_scene.models.push(sphere3);
 
