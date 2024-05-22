@@ -1,13 +1,14 @@
 # 3D Rendering - Illumination and Shading
-3D illumination &amp; shading starter code using the Babylon and WebGL APIs
+## Description
+For this project, me and my partner Jonny DeMarais created fragment and vertex shaders for both Phong and Gouraud lighting algorithms. We also made three different scenes to demonstrate these shaders. To do all this, we used WebGL and Babylon JS to apply the lighting calculations and math that was taught during class. We learned how the Babylon library works and how to make different 3D objects from it along with applying different textures and lighting properties like specular and reflectiveness. We also learned how to add lights to the scene of different colors and intensities.
 
-<h3> Setup </h3>
-
+## Setup
 To run this code:
 
 <ol>
     <li>Download the folder containing the code for this project</li>
     <li>Run the project in a software and open a new terminal</li>
+    <li>Type npm install to download the dependencies</li>
     <li>Type npm run dev -- --port 8000 and follow the link in the terminal</li>
 </ol>
 
